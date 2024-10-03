@@ -9,8 +9,7 @@ import router from './router'
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Import App Check
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,12 +23,19 @@ const firebaseConfig = {
   measurementId: "G-EWKX5TW9W2"
 };
 
-initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
-const app = createApp(App)
+// Initialize App Check with reCAPTCHA v3
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('FIREBASE_APP_CHECK_DEBUG_TOKEN'), // Replace with your reCAPTCHA site key
+});
 
-app.use(createPinia())
+const vueApp = createApp(App)
 
-app.use(router)
+vueApp.use(createPinia())
 
-app.mount('#app')
+vueApp.use(router)
+
+vueApp.mount('#app')
